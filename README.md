@@ -1,147 +1,93 @@
 # 💳 Credit Application Service - CoopCredit
 
-## 📋 Description
-Comprehensive credit application system featuring **Hexagonal Architecture**, **JWT security**, **Observability**, and **Microservices** for the financial cooperative **CoopCredit**.
+[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.0-green.svg)](https://spring.io/projects/spring-boot)
+[![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+**CoopCredit** is a comprehensive credit application system built with a focus on modern software architecture principles. It leverages **Hexagonal Architecture** to ensure maintainability and testability, coupled with a **Microservices** approach for scalability. This system is designed for the financial cooperative ecosystem.
 
 ---
+
+## 📑 Table of Contents
+- [Description](#-description)
+- [Architecture](#-architecture)
+- [Key Features](#-key-features)
+- [Tech Stack](#-tech-stack)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [API Endpoints](#-api-endpoints)
+- [Observability](#-observability)
+
+---
+
+## 📋 Description
+**CoopCredit** provides a robust platform for managing credit applications. It facilitates the entire lifecycle of a credit request, from member registration to automated risk evaluation and final approval.
 
 ## 🏗️ Architecture
 This project adheres to modern design principles to ensure **scalability** and **maintainability**.
 
-
-[Image of Hexagonal Architecture diagram]
-
-
-* **Hexagonal Architecture** (Ports & Adapters): Clear separation between the core business logic (Domain) and implementation details (Infrastructure).
-* **Microservices**: Consists of two independent services: the main service (`credit-application-service`) and a risk central mock service (`risk-central-mock-service`).
-* **Clean Architecture**: Strict layering to keep the domain isolated.
+* **Hexagonal Architecture (Ports & Adapters):** Clear separation between the core business logic (Domain) and implementation details (Infrastructure).
+* **Microservices Strategy:** 
+    * `credit-application-service`: The core domain service.
+    * `risk-central-mock-service`: A simulation of an external financial risk evaluation system.
+* **Clean Architecture:** Strict layering to keep the domain isolated from frameworks and drivers.
 
 ---
 
 ## ✨ Key Features
 
 ### 📊 Member Management
-* Registration and editing of members (Affiliates).
-* Unique document validation.
-* Status control (**ACTIVE/INACTIVE**).
+* **Affiliate Registration:** Secure onionboarding of new members.
+* **Validation:** Unique document validation to prevent duplicates.
+* **State Management:** Control of member statuses (**ACTIVE/INACTIVE**).
 
 ### 💳 Credit Application Management
-* Full application and evaluation flow.
-* Integration with external risk central (via a mock service).
-* Internal approval policies.
-* Statuses: **PENDING**, **APPROVED**, **REJECTED**.
+* **Full Lifecycle:** Application submission, evaluation, and decisioning.
+* **Risk Integration:** Seamless integration with external risk central (simulated).
+* **Policy Engine:** Internal approval policies applied automatically.
+* **Status Tracking:** Real-time status updates: **PENDING**, **APPROVED**, **REJECTED**.
 
 ### 🔐 Security
-* **JWT** Authentication (stateless).
-* Roles: `AFFILIATE`, `ANALYST`, `ADMIN`.
-* Role-Based Access Control (**RBAC**).
+* **JWT Authentication:** Stateless, secure token-based authentication.
+* **RBAC:** Role-Based Access Control with distinct roles:
+    * `AFFILIATE`
+    * `ANALYST`
+    * `ADMIN`
 
 ### 📈 Observability
-* **Actuator** endpoints for monitoring.
-* **Prometheus** metrics with **Micrometer**.
-* Detailed **Health Checks**.
-* **Structured Logging**.
+* **Monitoring:** Actuator endpoints exposed.
+* **Metrics:** Prometheus metrics integrated with Micrometer.
+* **Health Checks:** Detailed system health status.
+* **Logging:** Structured logging for easier debugging and tracing.
 
 ### 🐳 Containerization
-* **Docker multi-stage builds** for optimized images.
-* **Docker Compose** for complete environment orchestration (PostgreSQL, Prometheus, Grafana).
+* **Docker:** Multi-stage builds for optimized, small-footprint images.
+* **Docker Compose:** Full environment orchestration including PostgreSQL and Observability tools.
 
 ---
 
-## 🛠️ Technologies
+## 🛠️ Tech Stack
 
-### Backend
-| Category | Technologies |
+| Category | Technology |
 | :--- | :--- |
-| Language/Framework | **Java 17**, **Spring Boot 3.5.8** |
-| Security | **Spring Security + JWT** |
-| Persistence | **Spring Data JPA**, **PostgreSQL + Flyway** |
-| Utilities | **MapStruct**, **OpenFeign** |
-| Monitoring | **Actuator + Micrometer** |
-
-### Infrastructure
-* **Docker + Docker Compose**
-* **PostgreSQL**
-* **Prometheus**
-* **Grafana**
-
-### Testing
-* **JUnit 5**
-* **Mockito**
-* **Testcontainers**
+| **Language** | Java 17 |
+| **Framework** | Spring Boot 3 |
+| **Database** | PostgreSQL |
+| **Security** | Spring Security, JWT |
+| **Build Tool** | Maven |
+| **Containerization** | Docker, Docker Compose |
+| **Migration** | Flyway |
 
 ---
 
-## 🚀 Installation
-
-### 1. Prerequisites
-Ensure you have the following installed:
-* **Java 17** or higher
-* **Maven 3.8+**
-* **Docker 20.10+**
-* **Docker Compose 2.0+**
-
-### 2. Clone the Repository
-```bash
-git clone [repository-url]
-cd credit-application-service
-```
-3. ConfigurationCreate an environment variables file (optional, if not using defaults):Bashcp .env.example .env
-4. Run with Docker Compose (Recommended)This is the fastest way to bring up the entire ecosystem (services, database, and monitoring).Bash# Build and run all services in the background
-docker-compose up --build -d
-
-# View logs for all services
-```bash
-docker-compose logs -f
-```
-# Stop and remove containers, networks, and volumes safely
-docker-compose down -v
-5. Run LocallyIf you prefer running services on your local machine:Bash# 1. Start database (using Docker)
-docker-compose up postgres -d
-
-# 2. Compile the main project
+## 📂 Project Structure
 
 ```bash
-mvn clean package
-```
-```bash
-# 3. Run the main service
-java -jar target/credit-application-service-1.0.0.jar
-
-# 4. In ANOTHER TERMINAL, run the Risk Central Mock Service
-cd risk-central-mock-service
-mvn spring-boot:run
-🌐 EndpointsAuthenticationMethodEndpointDescriptionRolesPOST/api/auth/loginLog in and get JWTPUBLICPOST/api/auth/registerRegister new user (Affiliate)PUBLICAffiliatesMethodEndpointDescriptionRolesPOST/api/affiliatesCreate new affiliateADMINGET/api/affiliatesList all affiliatesANALYST, ADMINGET/api/affiliates/{id}Get affiliate detailsAFFILIATE, ANALYST, ADMINCredit ApplicationsMethodEndpointDescriptionRolesPOST/api/credit-applicationsCreate new applicationAFFILIATEGET/api/credit-applications/{id}Get application detailsAFFILIATE, ANALYST, ADMINGET/api/credit-applications/affiliate/{id}List applications by affiliateAFFILIATE, ANALYST, ADMINPOST/api/credit-applications/{id}/evaluateEvaluate applicationANALYST, ADMINObservabilityMethodEndpointDescriptionGET/api/actuator/healthSystem health checkGET/api/actuator/metricsGeneral metricsGET/api/actuator/prometheusPrometheus format metricsGET/api/actuator/infoApplication information👥 Roles and PermissionsRoleDescriptionKey PermissionsROLE_AFFILIATERegular MemberCreate own credit applications, view their status, and personal info.ROLE_ANALYSTCredit AnalystView and evaluate PENDING applications, view affiliate info, and system metrics.ROLE_ADMINAdministratorCreate and manage affiliates, full access to all functionalities, user/role management.📊 Credit Application FlowThe application and evaluation process involves the following steps:Registration & Auth: Affiliate registers and logs in, obtaining a JWT.Application: Affiliate creates the credit application (POST /api/credit-applications).Risk Evaluation: The system internally consults the Risk Central Service (mock).Policy Application: The system applies internal approval/rejection policies.Initial Decision: Automatic approval or rejection based on results.Analyst Review (Optional): Analyst can review special cases and apply the final decision.🧪 TestingThe project includes unit, integration, and coverage tests.Bash# Execute all tests
-mvn test
-
-# Execute integration tests (configured with the 'integration' profile)
-mvn verify
-
-# Execute with coverage (generates a JaCoCo report)
-mvn test jacoco:report
-
-# Execute integration tests using Testcontainers
-mvn test -Pintegration
-📈 MonitoringIf you used docker-compose up, you can access the observability tools:PrometheusURL: http://localhost:9090Purpose: Application metrics collection.GrafanaURL: http://localhost:3000Credentials: User: admin, Password: adminPurpose: Metrics visualization and pre-configured dashboards.Health ChecksYou can check the application status directly:Bash# Application health check
-curl http://localhost:8080/api/actuator/health
-
-# Prometheus format metrics
-curl http://localhost:8080/api/actuator/prometheus
-🔧 ConfigurationEnvironment VariablesCan be configured via a .env file or system variables:VariableDescriptionDefault ValueSPRING_DATASOURCE_URLPostgreSQL connection URL.jdbc:postgresql://localhost:5432/coopcreditSPRING_DATASOURCE_USERNAMEPostgreSQL username.postgresSPRING_DATASOURCE_PASSWORDPostgreSQL password.postgresJWT_SECRETSecret key for signing JWT. Change in production!your-secret-key-hereJWT_EXPIRATIONJWT expiration time in milliseconds.86400000RISK_CENTRAL_SERVICE_URLURL for the risk service.http://localhost:8081Logging ConfigurationStructured logging is configured in application.yml:YAMLlogging:
-  level:
-    com.coopcredit: DEBUG # Log level for the application package
-  file:
-    name: logs/application.log # Log file path
-🐳 DockerAvailable Imagescredit-application-service: Main servicerisk-central-mock-service: Risk mock servicepostgres: Database (official image)prometheus: Monitoring (official image)grafana: Dashboards (official image)Useful Docker CommandsBash# Build the main service image
-docker build -t credit-application-service .
-
-# View container logs
-docker logs -f credit-application-service
-
-# Run integration tests in containers (uses docker-compose.test.yml)
-docker-compose -f docker-compose.test.yml up
-
-🗂️ Project StructureThe structure reflects the Hexagonal Architecture:Plaintextcredit-application-service/
+CoopCredit/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/coopcredit/creditapplicationservice/
@@ -165,14 +111,92 @@ docker-compose -f docker-compose.test.yml up
 ├── Dockerfile                             # Docker Build file
 ├── prometheus.yml                         # Prometheus config
 └── README.md                              # This file
-📝 API DocumentationSwagger/OpenAPIInteractive documentation is available once the service is running:Swagger UI: http://localhost:8080/api/swagger-ui.htmlOpenAPI Docs: http://localhost:8080/api/v3/api-docsPostman CollectionA Postman collection is included in the /postman folder, which contains:Environment configuration.Requests for all endpoints.Payload examples.🐛 TroubleshootingCommon IssueVerificationSolutionDatabase connection failure`docker psgrep postgres` (check if running)Flyway migration errorApplication logsdocker-compose down -v and restart the database.JWT issuesCheck JWT_SECRET in .envObtain a new token via POST /api/auth/login.Risk Central Service unavailablecurl http://localhost:8081/api/healthRebuild and run mock service: cd risk-central-mock-service; mvn spring-boot:run🏁 Execution Instructions (Summary)Test Users:| Role | Username | Password || :--- | :--- | :--- || Admin | admin | admin123 || Analyst | analyst | analyst123 || Affiliate | johndoe | password123 |IMPORTANT: For production, all secrets and passwords must be changed.Bash# 1. Start database
-docker-compose up postgres -d
+```
 
-# 2. Build and run the main service
-mvn clean package
-java -jar target/credit-application-service-1.0.0.jar
+---
 
-# 3. In ANOTHER TERMINAL, run the mock service
+## 🚀 Getting Started
+
+Follow these instructions to get a copy of the project up and running on your local machine.
+
+### Prerequisites
+* [Java Development Kit (JDK) 17+](https://www.oracle.com/java/technologies/downloads/)
+* [Maven](https://maven.apache.org/) (Wrapper included)
+* [Docker Desktop](https://www.docker.com/) (or Docker Engine + Compose)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd CoopCredit
+   ```
+
+2. **Start Infrastructure Services**
+   Use Docker Compose to start the database (and valid observability tools if configured).
+   ```bash
+   docker-compose up postgres -d
+   ```
+
+3. **Verify Database Connection**
+   Ensure PostgreSQL is running on port `5432`.
+
+### Running the Application
+
+This system consists of two services that need to run simultaneously.
+
+#### 1. Start the Main Service (`credit-application-service`)
+Open a terminal:
+```bash
+cd credit-application-service
+mvn clean spring-boot:run
+```
+*Application will start on `http://localhost:8080`*
+
+#### 2. Start the Mock Service (`risk-central-mock-service`)
+Open a **new terminal tab/window**:
+```bash
 cd risk-central-mock-service
 mvn spring-boot:run
-Thank you for using the Credit Application Service! 🚀
+```
+*Mock service will start on `http://localhost:8081` (or configured port)*
+
+---
+
+## 📡 API Endpoints
+
+Here are the primary endpoints available in the system.
+
+| Method | Endpoint | Description | Role Required |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/auth/login` | Login to receive JWT Token | Public |
+| `POST` | `/api/users` | Register a new user | Admin |
+| `POST` | `/api/credits` | Submit a credit application | Affiliate |
+| `GET` | `/api/credits/{id}` | Get application status | Affiliate/Analyst |
+| `POST` | `/risk-evaluation` | (Mock) Evaluate credit risk | System |
+
+---
+
+## 🧪 Testing with Postman
+
+To facilitate API testing, a Postman collection `CoopCredit_Postman_Collection.json` is included in the root directory.
+
+### Importing the Collection
+1. Open Postman.
+2. Click **Import** -> **File** -> **Upload Files**.
+3. Select `CoopCredit_Postman_Collection.json`.
+
+### Expected Results
+
+| Request | Endpoint | Expected Status | Response Body / Note |
+| :--- | :--- | :--- | :--- |
+| **Login** | `POST /api/auth/login` | `200 OK` | `{ "token": "ey..." }` <br> *Token is auto-saved as `jwt_token`* |
+| **Create Affiliate** | `POST /api/affiliates` | `201 Created` | `{ "id": 1, "document": "...", "status": "ACTIVE" }` |
+| **Get All Affiliates** | `GET /api/affiliates` | `200 OK` | `[ { "id": 1, ... }, ... ]` |
+| **Create Credit App** | `POST /api/credit-applications` | `201 Created` | `{ "id": 1, "status": "PENDING", ... }` |
+| **Risk Evaluation** | `POST /api/risk-evaluation` | `200 OK` | `{ "score": 750, "nivelRiesgo": "LOW", ... }` |
+
+> [!NOTE]
+> Make sure to run the **Login** request first. The collection is configured to automatically extract the JWT token and use it for subsequent authenticated requests.
+
+---
